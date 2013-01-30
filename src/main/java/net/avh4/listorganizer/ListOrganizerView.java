@@ -45,6 +45,8 @@ public class ListOrganizerView implements UI {
     @Override
     public void key(int keyCode) {
         int groupIndex = keyCode - KeyEvent.VK_1;
+        if (groupIndex < 0) return;
+        if (groupIndex >= model.getGroups().size()) return;
         String group = model.getGroups().get(groupIndex);
         String item = model.getUpcomingItems().get(0);
         actions.sort(item, group);
