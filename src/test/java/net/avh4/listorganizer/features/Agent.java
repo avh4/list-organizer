@@ -18,8 +18,15 @@ public class Agent {
 
     protected void sortNextItem(String item, String group) {
         assertThat(listOrganizer.getUpcomingItems().get(0)).isEqualTo(item);
-        assertThat(listOrganizer.getGroups()).contains(group);
-        int index = listOrganizer.getGroups().indexOf(group);
+        int index = findIndexOfGroup(group);
         listOrganizerView.key(KeyEvent.VK_1 + index);
+    }
+
+    private int findIndexOfGroup(String groupName) {
+        for (int i = 0; true; i++) {
+            if (listOrganizer.getGroups().get(i).getName().equals(groupName)) {
+                return i;
+            }
+        }
     }
 }

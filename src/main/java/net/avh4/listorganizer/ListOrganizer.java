@@ -6,9 +6,9 @@ import net.avh4.framework.uilayer.UILayer;
 import java.util.*;
 
 public class ListOrganizer implements ListOrganizerViewModel, ListOrganizerActions {
-    private Map<String, ArrayList<String>> itemsForGroup = new HashMap<>();
+    private Map<String, Group> groupsByName = new HashMap<>();
     private LinkedList<String> upcomingItems;
-    private ImmutableList<String> groups;
+    private ArrayList<Group> groups;
 
     public static void main(String[] args) {
         ListOrganizer listOrganizer = new ListOrganizer();
@@ -19,24 +19,26 @@ public class ListOrganizer implements ListOrganizerViewModel, ListOrganizerActio
     }
 
     public void setGroups(String... groups) {
-        this.groups = ImmutableList.copyOf(groups);
-        for (String group : groups) {
-            itemsForGroup.put(group, new ArrayList<String>());
+        this.groups = new ArrayList<>();
+        for (String groupName : groups) {
+            Group group = new Group(groupName);
+            groupsByName.put(groupName, group);
+            this.groups.add(group);
         }
     }
 
     @Override
-    public void sort(String item, String group) {
-        itemsForGroup.get(group).add(item);
+    public void sort(String item, Group group) {
+        group.addItem(item);
         upcomingItems.pop();
     }
 
-    public List<String> itemsInGroup(String group) {
-        return itemsForGroup.get(group);
+    public List<String> itemsInGroup(String groupName) {
+        return groupsByName.get(groupName).getItems();
     }
 
-    public ImmutableList<String> getGroups() {
-        return groups;
+    public ImmutableList<Group> getGroups() {
+        return ImmutableList.copyOf(groups);
     }
 
     @Override

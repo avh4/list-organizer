@@ -1,5 +1,7 @@
 package net.avh4.listorganizer;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,14 +25,19 @@ public class ListOrganizerTest {
     @Test
     public void setGroups_shouldSetGroups() {
         subject.setGroups("Camels", "Birds", "Monkeys");
-        assertThat(subject.getGroups()).containsExactly("Camels", "Birds", "Monkeys");
+        assertThat(Iterables.transform(subject.getGroups(), new Function<Group, String>() {
+            @Override
+            public String apply(Group group) {
+                return group.getName();
+            }
+        })).contains("Camels", "Birds", "Monkeys");
     }
 
     @Test
     public void sort_shouldAdvanceToNextItem() {
         subject.setGroups("Animals");
         subject.setItems("Horse", "Monkey", "Dog");
-        subject.sort("Horse", "Animals");
+        subject.sort("Horse", subject.getGroups().get(0));
         assertThat(subject.getUpcomingItems()).containsExactly("Monkey", "Dog");
     }
 }

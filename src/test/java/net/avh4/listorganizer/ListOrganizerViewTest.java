@@ -19,12 +19,21 @@ public class ListOrganizerViewTest {
     private ListOrganizerViewModel model;
     @Mock
     private ListOrganizerActions actions;
+    @Mock
+    private Group animals;
+    @Mock
+    private Group vehicles;
+    @Mock
+    private Group other;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new ListOrganizerView(model, actions);
-        stub(model.getGroups()).toReturn(ImmutableList.of("Animals", "Vehicles", "Other"));
+        stub(animals.getName()).toReturn("Animals");
+        stub(vehicles.getName()).toReturn("Vehicles");
+        stub(other.getName()).toReturn("Other");
+        stub(model.getGroups()).toReturn(ImmutableList.of(animals, vehicles, other));
     }
 
     @Test
@@ -34,17 +43,32 @@ public class ListOrganizerViewTest {
     }
 
     @Test
+    public void withOneItemLeft() throws Exception {
+        stub(model.getUpcomingItems()).toReturn(ImmutableList.<String>of("Chicken"));
+        assertThat(subject, isApproved());
+    }
+
+    @Test
+    public void withNoMoreItems() throws Exception {
+        stub(model.getUpcomingItems()).toReturn(ImmutableList.<String>of());
+        stub(animals.getItems()).toReturn(ImmutableList.of("Horse", "Pig", "Chicken"));
+        stub(vehicles.getItems()).toReturn(ImmutableList.of("Car", "Boat"));
+        stub(other.getItems()).toReturn(ImmutableList.<String>of());
+        assertThat(subject, isApproved());
+    }
+
+    @Test
     public void key_1_shouldSortTheCurrentItemToTheFirstGroup() {
         stub(model.getUpcomingItems()).toReturn(ImmutableList.of("Horse", "Car", "Boat", "Pig", "Chicken"));
         subject.key(KeyEvent.VK_1);
-        verify(actions).sort("Horse", "Animals");
+        verify(actions).sort("Horse", animals);
     }
 
     @Test
     public void key_2_shouldSortTheCurrentItemToTheSecondGroup() {
         stub(model.getUpcomingItems()).toReturn(ImmutableList.of("Car", "Boat", "Pig", "Chicken"));
         subject.key(KeyEvent.VK_2);
-        verify(actions).sort("Car", "Vehicles");
+        verify(actions).sort("Car", vehicles);
     }
 
     @Test
