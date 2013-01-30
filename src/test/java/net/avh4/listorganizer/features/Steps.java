@@ -25,7 +25,7 @@ public class Steps {
 
     @Given("^a set of groups")
     public void a_set_of_groups() throws Throwable {
-        agent.listOrganizer.setGroups("Animal", "Vehicle", "Other");
+        listOrganizer.setGroups("Animal", "Vehicle", "Other");
     }
 
     @When("^I sort all the items using the keyboard$")

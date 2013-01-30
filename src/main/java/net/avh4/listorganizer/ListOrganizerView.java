@@ -1,11 +1,13 @@
 package net.avh4.listorganizer;
 
 import com.google.common.collect.ImmutableList;
-import net.avh4.framework.uilayer.SceneCreator;
+import net.avh4.framework.uilayer.UI;
 import net.avh4.framework.uilayer.scene.Scene;
 import net.avh4.framework.uilayer.scene.ScenePlaceholder;
 
-public class ListOrganizerView implements SceneCreator {
+import java.awt.event.KeyEvent;
+
+public class ListOrganizerView implements UI {
 
     public static final int GROUP_HEIGHT = 88;
     public static final int GROUP_WIDTH = 160;
@@ -13,9 +15,11 @@ public class ListOrganizerView implements SceneCreator {
     public static final int GROUP_V_MARGIN = 40;
     public static final int CURRENT_ITEM_HEIGHT = 40;
     private final ListOrganizerViewModel model;
+    private final ListOrganizerActions actions;
 
-    public ListOrganizerView(ListOrganizerViewModel model) {
+    public ListOrganizerView(ListOrganizerViewModel model, ListOrganizerActions actions) {
         this.model = model;
+        this.actions = actions;
     }
 
     @Override
@@ -32,5 +36,17 @@ public class ListOrganizerView implements SceneCreator {
         scene.add(new ScenePlaceholder(items.get(3), 0, GROUP_V_MARGIN + GROUP_HEIGHT + GROUP_V_MARGIN + CURRENT_ITEM_HEIGHT + 2 * MORE_ITEMS_HEIGHT, 800, MORE_ITEMS_HEIGHT));
         scene.add(new ScenePlaceholder(items.get(4), 0, GROUP_V_MARGIN + GROUP_HEIGHT + GROUP_V_MARGIN + CURRENT_ITEM_HEIGHT + 3 * MORE_ITEMS_HEIGHT, 800, MORE_ITEMS_HEIGHT));
         return scene;
+    }
+
+    @Override
+    public void click(int x, int y) {
+    }
+
+    @Override
+    public void key(int keyCode) {
+        int groupIndex = keyCode - KeyEvent.VK_1;
+        String group = model.getGroups().get(groupIndex);
+        String item = model.getUpcomingItems().get(0);
+        actions.sort(item, group);
     }
 }
