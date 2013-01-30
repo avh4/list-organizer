@@ -16,7 +16,6 @@ import static org.fest.assertions.Assertions.assertThat;
 public class Steps {
 
     private ImmutableList<String> items;
-    private ImmutableList<String> groups;
     private Map<String, ArrayList<String>> itemsForGroup = new HashMap<>();
 
     @Given("^a list of items$")
@@ -46,15 +45,12 @@ public class Steps {
     }
 
     private void setGroups(String... groups) {
-        this.groups = ImmutableList.copyOf(groups);
         for (String group : groups) {
             itemsForGroup.put(group, new ArrayList<String>());
         }
     }
 
     private void sort(String item, String group) {
-        assertThat(items).contains(item);
-        assertThat(groups).contains(group);
         itemsForGroup.get(group).add(item);
     }
 
