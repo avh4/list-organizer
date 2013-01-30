@@ -1,6 +1,5 @@
 package net.avh4.listorganizer.features;
 
-import com.google.common.collect.ImmutableList;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -10,25 +9,32 @@ import static org.fest.assertions.Assertions.assertThat;
 
 @SuppressWarnings("UnusedDeclaration")
 public class Steps {
-    private final ListOrganizer listOrganizer = new ListOrganizer();
+
+    private final Agent agent;
+    private final ListOrganizer listOrganizer;
+
+    public Steps(Agent agent, ListOrganizer listOrganizer) {
+        this.agent = agent;
+        this.listOrganizer = listOrganizer;
+    }
 
     @Given("^a list of items$")
     public void a_list_of_items() throws Throwable {
-        ImmutableList<String> items = ImmutableList.of("Horse", "Car", "Boat", "Pig", "Chicken");
+        listOrganizer.setItems("Horse", "Car", "Boat", "Pig", "Chicken");
     }
 
     @Given("^a set of groups")
     public void a_set_of_groups() throws Throwable {
-        listOrganizer.setGroups("Animal", "Vehicle", "Other");
+        agent.listOrganizer.setGroups("Animal", "Vehicle", "Other");
     }
 
     @When("^I sort all the items using the keyboard$")
     public void I_sort_all_the_items_using_the_keyboard() throws Throwable {
-        listOrganizer.sort("Horse", "Animal");
-        listOrganizer.sort("Car", "Vehicle");
-        listOrganizer.sort("Boat", "Vehicle");
-        listOrganizer.sort("Pig", "Animal");
-        listOrganizer.sort("Chicken", "Animal");
+        agent.sortNextItem("Horse", "Animal");
+        agent.sortNextItem("Car", "Vehicle");
+        agent.sortNextItem("Boat", "Vehicle");
+        agent.sortNextItem("Pig", "Animal");
+        agent.sortNextItem("Chicken", "Animal");
     }
 
     @Then("^I can see the list of items for each groups$")
