@@ -43,4 +43,19 @@ public class Steps {
         assertThat(listOrganizer.itemsInGroup("Vehicle")).containsExactly("Car", "Boat");
         assertThat(listOrganizer.itemsInGroup("Other")).isEmpty();
     }
+
+    @When("^I choose a GoodReads CSV file to sort$")
+    public void I_choose_a_GoodReads_CSV_file_to_sort() throws Throwable {
+        listOrganizer.setItemsFromCsv("goodreads_export.csv");
+    }
+
+    @Then("^I see items with the author and title$")
+    public void I_see_items_with_the_author_and_title() throws Throwable {
+        assertThat(listOrganizer.getUpcomingItems()).containsExactly(
+                "Harry Potter and the Order of the Phoenix (Harry Potter, #5) - J.K. Rowling",
+                "It Chooses You - Miranda July",
+                "Le Petit Prince - Antoine de Saint-Exupéry",
+                "User Stories Applied: For Agile Software Development - Mike Cohn"
+        );
+    }
 }
