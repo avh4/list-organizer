@@ -7,7 +7,7 @@ import net.avh4.framework.uilayer.scene.ScenePlaceholder;
 
 import java.awt.event.KeyEvent;
 
-public class ListOrganizerView implements UI {
+public class ListSortingView implements UI {
 
     public static final int GROUP_HEIGHT = 88;
     public static final int GROUP_WIDTH = 160;
@@ -15,10 +15,10 @@ public class ListOrganizerView implements UI {
     public static final int GROUP_V_MARGIN = 40;
     public static final int CURRENT_ITEM_HEIGHT = 40;
     public static final int HEADER_HEIGHT = 40;
-    private final ListOrganizerViewModel model;
-    private final ListOrganizerActions actions;
+    private final ListSortingViewModel model;
+    private final ListSortingActions actions;
 
-    public ListOrganizerView(ListOrganizerViewModel model, ListOrganizerActions actions) {
+    public ListSortingView(ListSortingViewModel model, ListSortingActions actions) {
         this.model = model;
         this.actions = actions;
     }

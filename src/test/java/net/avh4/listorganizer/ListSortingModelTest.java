@@ -7,13 +7,13 @@ import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class ListOrganizerTest {
+public class ListSortingModelTest {
 
-    private ListOrganizer subject;
+    private ListSortingModel subject;
 
     @Before
     public void setUp() {
-        subject = new ListOrganizer();
+        subject = new ListSortingModel();
     }
 
     @Test

@@ -12,13 +12,13 @@ import static net.avh4.util.imagecomparison.ImageComparisonMatchers.isApproved;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
-public class ListOrganizerViewTest {
+public class ListSortingViewTest {
 
-    private ListOrganizerView subject;
+    private ListSortingView subject;
     @Mock
-    private ListOrganizerViewModel model;
+    private ListSortingViewModel model;
     @Mock
-    private ListOrganizerActions actions;
+    private ListSortingActions actions;
     @Mock
     private Group animals;
     @Mock
@@ -29,7 +29,7 @@ public class ListOrganizerViewTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new ListOrganizerView(model, actions);
+        subject = new ListSortingView(model, actions);
         stub(animals.getName()).toReturn("Animals");
         stub(vehicles.getName()).toReturn("Vehicles");
         stub(other.getName()).toReturn("Other");

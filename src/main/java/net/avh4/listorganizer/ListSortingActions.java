@@ -1,5 +1,5 @@
 package net.avh4.listorganizer;
 
-public interface ListOrganizerActions {
+public interface ListSortingActions {
     void sort(String item, Group group);
 }

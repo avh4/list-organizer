@@ -1,30 +1,30 @@
 package net.avh4.listorganizer.features;
 
-import net.avh4.listorganizer.ListOrganizer;
-import net.avh4.listorganizer.ListOrganizerView;
+import net.avh4.listorganizer.ListSortingModel;
+import net.avh4.listorganizer.ListSortingView;
 
 import java.awt.event.KeyEvent;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 public class Agent {
-    private final ListOrganizer listOrganizer;
-    private final ListOrganizerView listOrganizerView;
+    private final ListSortingModel listSortingModel;
+    private final ListSortingView listSortingView;
 
-    public Agent(ListOrganizer listOrganizer) {
-        this.listOrganizer = listOrganizer;
-        this.listOrganizerView = new ListOrganizerView(listOrganizer, listOrganizer);
+    public Agent(ListSortingModel listSortingModel) {
+        this.listSortingModel = listSortingModel;
+        this.listSortingView = new ListSortingView(listSortingModel, listSortingModel);
     }
 
     protected void sortNextItem(String item, String group) {
-        assertThat(listOrganizer.getUpcomingItems().get(0)).isEqualTo(item);
+        assertThat(listSortingModel.getUpcomingItems().get(0)).isEqualTo(item);
         int index = findIndexOfGroup(group);
-        listOrganizerView.key(KeyEvent.VK_1 + index);
+        listSortingView.key(KeyEvent.VK_1 + index);
     }
 
     private int findIndexOfGroup(String groupName) {
         for (int i = 0; true; i++) {
-            if (listOrganizer.getGroups().get(i).getName().equals(groupName)) {
+            if (listSortingModel.getGroups().get(i).getName().equals(groupName)) {
                 return i;
             }
         }
