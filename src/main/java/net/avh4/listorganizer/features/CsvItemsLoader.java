@@ -1,19 +1,26 @@
 package net.avh4.listorganizer.features;
 
 import au.com.bytecode.opencsv.CSVReader;
+import net.avh4.framework.data.ExternalStorage;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CsvItemsLoader {
-    public List<String> createItemsFromCsv(String filename) {
-        InputStream is = getClass().getClassLoader().getResourceAsStream(filename);
-        Reader inputStream = new InputStreamReader(is);
-        CSVReader csv = new CSVReader(inputStream);
+    private final String filename;
+    private final ExternalStorage externalStorage;
+
+    public CsvItemsLoader(String filename, ExternalStorage externalStorage) {
+        this.filename = filename;
+        this.externalStorage = externalStorage;
+    }
+
+    public List<String> getItems() {
+        String fileContents = externalStorage.getString(filename);
+        StringReader sr = new StringReader(fileContents);
+        CSVReader csv = new CSVReader(sr);
         ArrayList<String> items = new ArrayList<>();
         try {
             csv.readNext();

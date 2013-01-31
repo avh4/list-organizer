@@ -3,6 +3,7 @@ package net.avh4.listorganizer.features;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import net.avh4.framework.data.test.ClasspathResourcesExternalStorage;
 import net.avh4.listorganizer.ListSortingModel;
 
 import java.util.List;
@@ -14,12 +15,12 @@ public class Steps {
 
     private final Agent agent;
     private final ListSortingModel listSortingModel;
-    private final CsvItemsLoader csvItemsLoader;
+    private final CsvItemsLoader goodReadsCsvItemsLoader;
 
-    public Steps(Agent agent, ListSortingModel listSortingModel, CsvItemsLoader csvItemsLoader) {
+    public Steps(Agent agent, ListSortingModel listSortingModel, GoodreadsCsvItemsLoader goodReadsCsvItemsLoader) {
         this.agent = agent;
         this.listSortingModel = listSortingModel;
-        this.csvItemsLoader = csvItemsLoader;
+        this.goodReadsCsvItemsLoader = goodReadsCsvItemsLoader;
     }
 
     @Given("^a list of items$")
@@ -50,7 +51,7 @@ public class Steps {
 
     @When("^I choose a GoodReads CSV file to sort$")
     public void I_choose_a_GoodReads_CSV_file_to_sort() throws Throwable {
-        List<String> items = csvItemsLoader.createItemsFromCsv("goodreads_export.csv");
+        List<String> items = goodReadsCsvItemsLoader.getItems();
         listSortingModel.setItems(items);
     }
 
@@ -64,4 +65,13 @@ public class Steps {
         );
     }
 
+    public static class GoodreadsCsvItemsLoader extends CsvItemsLoader {
+        public static final String FILE = "goodreads_export.csv";
+        public static final ClasspathResourcesExternalStorage EXTERNAL_STORAGE = new ClasspathResourcesExternalStorage(".");
+
+        public GoodreadsCsvItemsLoader() {
+            super(FILE, EXTERNAL_STORAGE);
+            EXTERNAL_STORAGE.allowFile(FILE);
+        }
+    }
 }

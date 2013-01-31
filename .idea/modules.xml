@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/list-organizer.iml" filepath="$PROJECT_DIR$/list-organizer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../uilayer/uilayer-core/uilayer-core.iml" filepath="$PROJECT_DIR$/../uilayer/uilayer-core/uilayer-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../uilayer/uilayer-swing/uilayer-swing.iml" filepath="$PROJECT_DIR$/../uilayer/uilayer-swing/uilayer-swing.iml" />
     </modules>
   </component>
 </project>
