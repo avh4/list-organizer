@@ -1,9 +1,17 @@
 package net.avh4.listorganizer.features;
 
+import au.com.bytecode.opencsv.CSVReader;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import net.avh4.listorganizer.ListOrganizer;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -46,7 +54,26 @@ public class Steps {
 
     @When("^I choose a GoodReads CSV file to sort$")
     public void I_choose_a_GoodReads_CSV_file_to_sort() throws Throwable {
-        listOrganizer.setItemsFromCsv("goodreads_export.csv");
+        List<String> items = createItemsFromCsv("goodreads_export.csv");
+        listOrganizer.setItems(items);
+    }
+
+    private List<String> createItemsFromCsv(String filename) {
+        InputStream is = getClass().getClassLoader().getResourceAsStream(filename);
+        Reader inputStream = new InputStreamReader(is);
+        CSVReader csv = new CSVReader(inputStream);
+        ArrayList<String> items = new ArrayList<>();
+        try {
+            csv.readNext();
+            while (true) {
+                String[] fields = csv.readNext();
+                if (fields == null) break;
+                items.add(fields[1] + " - " + fields[2]);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Can't read file: " + filename, e);
+        }
+        return items;
     }
 
     @Then("^I see items with the author and title$")

@@ -50,7 +50,7 @@ public class ListOrganizer implements ListOrganizerViewModel, ListOrganizerActio
         upcomingItems = new LinkedList<>(Arrays.asList(items));
     }
 
-    public void setItemsFromCsv(String filename) {
-        //To change body of created methods use File | Settings | File Templates.
+    public void setItems(List<String> items) {
+        upcomingItems = new LinkedList<>(items);
     }
 }
