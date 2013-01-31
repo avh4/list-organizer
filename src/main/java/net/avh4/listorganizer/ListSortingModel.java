@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.*;
 
-public class ListSortingModel implements ListSortingViewModel, ListSortingActions {
+public class ListSortingModel implements ListSortingView.Model, ListSortingView.Actions {
     private Map<String, Group> groupsByName = new HashMap<>();
     private LinkedList<String> upcomingItems;
     private ArrayList<Group> groups;

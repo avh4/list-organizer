@@ -9,23 +9,32 @@ import java.awt.event.KeyEvent;
 
 public class ListSortingView implements UI {
 
+    public static interface Model {
+        ImmutableList<Group> getGroups();
+
+        ImmutableList<String> getUpcomingItems();
+    }
+
+    public static interface Actions {
+        void sort(String item, Group group);
+    }
+
     public static final int GROUP_HEIGHT = 88;
     public static final int GROUP_WIDTH = 160;
     public static final int MORE_ITEMS_HEIGHT = 20;
     public static final int GROUP_V_MARGIN = 40;
     public static final int CURRENT_ITEM_HEIGHT = 40;
     public static final int HEADER_HEIGHT = 40;
-    private final ListSortingViewModel model;
-    private final ListSortingActions actions;
+    private final Model model;
+    private final Actions actions;
 
-    public ListSortingView(ListSortingViewModel model, ListSortingActions actions) {
+    public ListSortingView(Model model, Actions actions) {
         this.model = model;
         this.actions = actions;
     }
 
     @Override
     public Scene getScene() {
-
         ImmutableList<String> items = model.getUpcomingItems();
 
         if (items.isEmpty()) {
@@ -33,7 +42,6 @@ public class ListSortingView implements UI {
         } else {
             return makeSortingScene();
         }
-
     }
 
     private Scene makeSortingScene() {

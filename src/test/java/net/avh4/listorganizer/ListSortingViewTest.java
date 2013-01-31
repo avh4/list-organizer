@@ -16,9 +16,9 @@ public class ListSortingViewTest {
 
     private ListSortingView subject;
     @Mock
-    private ListSortingViewModel model;
+    private ListSortingView.Model model;
     @Mock
-    private ListSortingActions actions;
+    private ListSortingView.Actions actions;
     @Mock
     private Group animals;
     @Mock
