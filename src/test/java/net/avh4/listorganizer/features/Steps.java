@@ -1,11 +1,14 @@
 package net.avh4.listorganizer.features;
 
+import com.google.common.base.Joiner;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import net.avh4.framework.data.test.ClasspathResourcesExternalStorage;
+import net.avh4.listorganizer.Group;
 import net.avh4.listorganizer.ListSortingModel;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -15,12 +18,14 @@ public class Steps {
 
     private final Agent agent;
     private final ListSortingModel listSortingModel;
+    private final TestExternalStorage externalStorage;
     private final CsvItemsLoader goodReadsCsvItemsLoader;
 
-    public Steps(Agent agent, ListSortingModel listSortingModel, GoodreadsCsvItemsLoader goodReadsCsvItemsLoader) {
+    public Steps(Agent agent, ListSortingModel listSortingModel, TestExternalStorage externalStorage) {
         this.agent = agent;
         this.listSortingModel = listSortingModel;
-        this.goodReadsCsvItemsLoader = goodReadsCsvItemsLoader;
+        this.externalStorage = externalStorage;
+        this.goodReadsCsvItemsLoader = new GoodreadsCsvItemsLoader(externalStorage);
     }
 
     @Given("^a list of items$")
@@ -65,13 +70,55 @@ public class Steps {
         );
     }
 
+    @When("^a list is sorted$")
+    public void a_list_is_sorted() throws Throwable {
+        listSortingModel.setItems("Horse", "Cow", "Boat");
+        listSortingModel.setGroups("Animals", "Vehicles", "Other");
+        agent.sortNextItem("Horse", "Animals");
+        agent.sortNextItem("Cow", "Animals");
+        agent.sortNextItem("Boat", "Vehicles");
+        for (Group group : listSortingModel.getGroups()) {
+            String data = Joiner.on("\n").join(group.getItems());
+            if (!group.getItems().isEmpty()) {
+                data += "\n";
+            }
+            externalStorage.writeFile(group.getName() + ".txt", data);
+        }
+    }
+
+    @When("^the sorted groups should be written to text files$")
+    public void the_sorted_groups_should_be_written_to_text_files() throws Throwable {
+        assertThat(externalStorage.getString("Animals.txt")).isEqualTo("Horse\nCow\n");
+        assertThat(externalStorage.getString("Vehicles.txt")).isEqualTo("Boat\n");
+        assertThat(externalStorage.getString("Other.txt")).isEqualTo("");
+    }
+
     public static class GoodreadsCsvItemsLoader extends CsvItemsLoader {
         public static final String FILE = "goodreads_export.csv";
-        public static final ClasspathResourcesExternalStorage EXTERNAL_STORAGE = new ClasspathResourcesExternalStorage(".");
 
-        public GoodreadsCsvItemsLoader() {
-            super(FILE, EXTERNAL_STORAGE);
-            EXTERNAL_STORAGE.allowFile(FILE);
+        public GoodreadsCsvItemsLoader(ClasspathResourcesExternalStorage externalStorage) {
+            super(FILE, externalStorage);
+            externalStorage.allowFile(FILE);
+        }
+    }
+
+    public static class TestExternalStorage extends ClasspathResourcesExternalStorage {
+        private HashMap<String, String> writtenFiles = new HashMap<>();
+
+        public TestExternalStorage() {
+            super(".");
+        }
+
+        @Override
+        public String getString(String filename) {
+            if (writtenFiles.containsKey(filename)) {
+                return writtenFiles.get(filename);
+            }
+            return super.getString(filename);
+        }
+
+        public void writeFile(String filename, String data) {
+            writtenFiles.put(filename, data);
         }
     }
 }

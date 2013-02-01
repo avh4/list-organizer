@@ -1,4 +1,4 @@
-Feature: Reading a CSV file
+Feature: Reading input files
 
 Scenario: GoodReads CSV file
 
