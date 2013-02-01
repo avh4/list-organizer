@@ -9,16 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CsvItemsLoader {
-    private final String filename;
+    public static final String FILE = "goodreads_export.csv";
     private final ExternalStorage externalStorage;
 
-    public CsvItemsLoader(String filename, ExternalStorage externalStorage) {
-        this.filename = filename;
+    public CsvItemsLoader(ExternalStorage externalStorage) {
         this.externalStorage = externalStorage;
     }
 
     public List<String> getItems() {
-        String fileContents = externalStorage.getString(filename);
+        String fileContents = externalStorage.getString(FILE);
         StringReader sr = new StringReader(fileContents);
         CSVReader csv = new CSVReader(sr);
         ArrayList<String> items = new ArrayList<>();
@@ -30,7 +29,7 @@ public class CsvItemsLoader {
                 items.add(fields[1] + " - " + fields[2]);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Can't read file: " + filename, e);
+            throw new RuntimeException("Can't read file: " + FILE, e);
         }
         return items;
     }

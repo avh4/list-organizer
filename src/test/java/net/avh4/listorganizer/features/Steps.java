@@ -6,9 +6,9 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import net.avh4.framework.data.test.ClasspathResourcesExternalStorage;
 import net.avh4.listorganizer.Group;
+import net.avh4.listorganizer.ListOrganizer;
 import net.avh4.listorganizer.ListSortingModel;
 import net.avh4.listorganizer.SortingFinishedListener;
-import net.avh4.listorganizer.TextFileWriter;
 
 import java.util.List;
 
@@ -20,15 +20,16 @@ public class Steps {
     private final Agent agent;
     private final ListSortingModel listSortingModel;
     private final TestExternalStorage externalStorage;
-    private final CsvItemsLoader goodReadsCsvItemsLoader;
     private List<String> items;
     private ImmutableList<String> groups = ImmutableList.of("Animal", "Vehicle", "Other");
+    private final ListOrganizer listOrganizer;
 
-    public Steps(Agent agent, ListSortingModel listSortingModel, TestExternalStorage externalStorage) {
-        this.agent = agent;
-        this.listSortingModel = listSortingModel;
+    public Steps(TestExternalStorage externalStorage) {
         this.externalStorage = externalStorage;
-        this.goodReadsCsvItemsLoader = new GoodreadsCsvItemsLoader(externalStorage);
+        externalStorage.allowFile(CsvItemsLoader.FILE);
+        this.listOrganizer = new ListOrganizer(externalStorage);
+        this.listSortingModel = listOrganizer.getModel();
+        this.agent = new Agent(listOrganizer);
     }
 
     @Given("^a list of items$")
@@ -64,8 +65,7 @@ public class Steps {
 
     @When("^I choose a GoodReads CSV file to sort$")
     public void I_choose_a_GoodReads_CSV_file_to_sort() throws Throwable {
-        items = goodReadsCsvItemsLoader.getItems();
-        listSortingModel.startSorting(groups, items, null);
+        listOrganizer.start(groups);
     }
 
     @Then("^I see items with the author and title$")
@@ -82,8 +82,7 @@ public class Steps {
     public void a_list_is_sorted() throws Throwable {
         items = ImmutableList.of("Horse", "Cow", "Boat");
         groups = ImmutableList.of("Animals", "Vehicles", "Other");
-        SortingFinishedListener listener = new TextFileWriter(externalStorage);
-        listSortingModel.startSorting(groups, items, listener);
+        listOrganizer.start(groups, items);
         agent.sortNextItem("Horse", "Animals");
         agent.sortNextItem("Cow", "Animals");
         agent.sortNextItem("Boat", "Vehicles");
@@ -94,15 +93,6 @@ public class Steps {
         assertThat(externalStorage.getString("Animals.txt")).isEqualTo("Horse\nCow\n");
         assertThat(externalStorage.getString("Vehicles.txt")).isEqualTo("Boat\n");
         assertThat(externalStorage.getString("Other.txt")).isEqualTo("");
-    }
-
-    public static class GoodreadsCsvItemsLoader extends CsvItemsLoader {
-        public static final String FILE = "goodreads_export.csv";
-
-        public GoodreadsCsvItemsLoader(ClasspathResourcesExternalStorage externalStorage) {
-            super(FILE, externalStorage);
-            externalStorage.allowFile(FILE);
-        }
     }
 
     public static class TestExternalStorage extends ClasspathResourcesExternalStorage {

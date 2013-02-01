@@ -1,7 +1,8 @@
 package net.avh4.listorganizer.features;
 
+import net.avh4.framework.uilayer.UI;
+import net.avh4.listorganizer.ListOrganizer;
 import net.avh4.listorganizer.ListSortingModel;
-import net.avh4.listorganizer.ListSortingView;
 
 import java.awt.event.KeyEvent;
 
@@ -9,17 +10,17 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class Agent {
     private final ListSortingModel listSortingModel;
-    private final ListSortingView listSortingView;
+    private final UI ui;
 
-    public Agent(ListSortingModel listSortingModel) {
-        this.listSortingModel = listSortingModel;
-        this.listSortingView = new ListSortingView(listSortingModel, listSortingModel);
+    public Agent(ListOrganizer listOrganizer) {
+        this.listSortingModel = listOrganizer.getModel();
+        this.ui = listOrganizer.getUi();
     }
 
     protected void sortNextItem(String item, String group) {
         assertThat(listSortingModel.getUpcomingItems().get(0)).isEqualTo(item);
         int index = findIndexOfGroup(group);
-        listSortingView.key(KeyEvent.VK_1 + index);
+        ui.key(KeyEvent.VK_1 + index);
     }
 
     private int findIndexOfGroup(String groupName) {
