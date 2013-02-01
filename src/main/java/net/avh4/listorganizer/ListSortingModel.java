@@ -8,8 +8,9 @@ public class ListSortingModel implements ListSortingView.Model, ListSortingView.
     private Map<String, Group> groupsByName = new HashMap<>();
     private LinkedList<String> upcomingItems;
     private ArrayList<Group> groups;
+    private SortingFinishedListener sortingFinishedListener;
 
-    public void setGroups(String... groups) {
+    private void setGroups(List<String> groups) {
         this.groups = new ArrayList<>();
         for (String groupName : groups) {
             Group group = new Group(groupName);
@@ -22,6 +23,15 @@ public class ListSortingModel implements ListSortingView.Model, ListSortingView.
     public void sort(String item, Group group) {
         group.addItem(item);
         upcomingItems.pop();
+        if (upcomingItems.isEmpty()) {
+            sortingFinishedListener.onSortingFinished(getGroups());
+        }
+    }
+
+    public void startSorting(List<String> groups, List<String> items, SortingFinishedListener listener) {
+        setItems(items);
+        setGroups(groups);
+        setListener(listener);
     }
 
     public List<String> itemsInGroup(String groupName) {
@@ -37,11 +47,11 @@ public class ListSortingModel implements ListSortingView.Model, ListSortingView.
         return ImmutableList.copyOf(upcomingItems);
     }
 
-    public void setItems(String... items) {
-        upcomingItems = new LinkedList<>(Arrays.asList(items));
+    private void setItems(List<String> items) {
+        upcomingItems = new LinkedList<>(items);
     }
 
-    public void setItems(List<String> items) {
-        upcomingItems = new LinkedList<>(items);
+    private void setListener(SortingFinishedListener sortingFinishedListener) {
+        this.sortingFinishedListener = sortingFinishedListener;
     }
 }

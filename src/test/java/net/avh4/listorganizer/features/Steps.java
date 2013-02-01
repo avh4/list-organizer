@@ -1,14 +1,15 @@
 package net.avh4.listorganizer.features;
 
-import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import net.avh4.framework.data.test.ClasspathResourcesExternalStorage;
 import net.avh4.listorganizer.Group;
 import net.avh4.listorganizer.ListSortingModel;
+import net.avh4.listorganizer.SortingFinishedListener;
+import net.avh4.listorganizer.TextFileWriter;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -20,6 +21,8 @@ public class Steps {
     private final ListSortingModel listSortingModel;
     private final TestExternalStorage externalStorage;
     private final CsvItemsLoader goodReadsCsvItemsLoader;
+    private List<String> items;
+    private ImmutableList<String> groups = ImmutableList.of("Animal", "Vehicle", "Other");
 
     public Steps(Agent agent, ListSortingModel listSortingModel, TestExternalStorage externalStorage) {
         this.agent = agent;
@@ -30,16 +33,21 @@ public class Steps {
 
     @Given("^a list of items$")
     public void a_list_of_items() throws Throwable {
-        listSortingModel.setItems("Horse", "Car", "Boat", "Pig", "Chicken");
+        items = ImmutableList.of("Horse", "Car", "Boat", "Pig", "Chicken");
     }
 
     @Given("^a set of groups")
     public void a_set_of_groups() throws Throwable {
-        listSortingModel.setGroups("Animal", "Vehicle", "Other");
+        assertThat(groups).isNotEmpty();
     }
 
     @When("^I sort all the items using the keyboard$")
     public void I_sort_all_the_items_using_the_keyboard() throws Throwable {
+        listSortingModel.startSorting(groups, items, new SortingFinishedListener() {
+            @Override
+            public void onSortingFinished(ImmutableList<Group> groups) {
+            }
+        });
         agent.sortNextItem("Horse", "Animal");
         agent.sortNextItem("Car", "Vehicle");
         agent.sortNextItem("Boat", "Vehicle");
@@ -56,8 +64,8 @@ public class Steps {
 
     @When("^I choose a GoodReads CSV file to sort$")
     public void I_choose_a_GoodReads_CSV_file_to_sort() throws Throwable {
-        List<String> items = goodReadsCsvItemsLoader.getItems();
-        listSortingModel.setItems(items);
+        items = goodReadsCsvItemsLoader.getItems();
+        listSortingModel.startSorting(groups, items, null);
     }
 
     @Then("^I see items with the author and title$")
@@ -72,18 +80,13 @@ public class Steps {
 
     @When("^a list is sorted$")
     public void a_list_is_sorted() throws Throwable {
-        listSortingModel.setItems("Horse", "Cow", "Boat");
-        listSortingModel.setGroups("Animals", "Vehicles", "Other");
+        items = ImmutableList.of("Horse", "Cow", "Boat");
+        groups = ImmutableList.of("Animals", "Vehicles", "Other");
+        SortingFinishedListener listener = new TextFileWriter(externalStorage);
+        listSortingModel.startSorting(groups, items, listener);
         agent.sortNextItem("Horse", "Animals");
         agent.sortNextItem("Cow", "Animals");
         agent.sortNextItem("Boat", "Vehicles");
-        for (Group group : listSortingModel.getGroups()) {
-            String data = Joiner.on("\n").join(group.getItems());
-            if (!group.getItems().isEmpty()) {
-                data += "\n";
-            }
-            externalStorage.writeFile(group.getName() + ".txt", data);
-        }
     }
 
     @When("^the sorted groups should be written to text files$")
@@ -103,22 +106,8 @@ public class Steps {
     }
 
     public static class TestExternalStorage extends ClasspathResourcesExternalStorage {
-        private HashMap<String, String> writtenFiles = new HashMap<>();
-
         public TestExternalStorage() {
             super(".");
-        }
-
-        @Override
-        public String getString(String filename) {
-            if (writtenFiles.containsKey(filename)) {
-                return writtenFiles.get(filename);
-            }
-            return super.getString(filename);
-        }
-
-        public void writeFile(String filename, String data) {
-            writtenFiles.put(filename, data);
         }
     }
 }
