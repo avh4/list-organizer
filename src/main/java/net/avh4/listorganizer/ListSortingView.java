@@ -47,7 +47,7 @@ public class ListSortingView implements UI {
     private Scene makeSortingScene() {
         ImmutableList<String> items = model.getUpcomingItems();
         Scene scene = new Scene("Sorting");
-        drawGroups(scene);
+        drawGroups(scene, 5);
 
         scene.add(new ScenePlaceholder(items.get(0),
                 ITEM_MARGIN,
@@ -62,18 +62,20 @@ public class ListSortingView implements UI {
 
     private Scene makeSortingFinishedScene() {
         Scene scene = new Scene("Done sorting");
-        drawGroups(scene);
+        drawGroups(scene, 1000);
         return scene;
     }
 
-    private void drawGroups(Scene scene) {
+    private void drawGroups(Scene scene, int itemLimit) {
         ImmutableList<Group> groups = model.getGroups();
         int numberOfGroups = groups.size();
         for (int i = 0; i < numberOfGroups; i++) {
             Group group = groups.get(i);
             int x = 800 * i / numberOfGroups;
             scene.add(new ScenePlaceholder(group.getName(), x, 0, 800 / numberOfGroups, HEADER_HEIGHT));
-            drawItems(scene, group.getItems(), x + ITEM_MARGIN, HEADER_HEIGHT, 800 / numberOfGroups - 2 * ITEM_MARGIN, 20);
+            ImmutableList<String> items = group.getItems();
+            items = items.subList(Math.max(0, items.size() - itemLimit), items.size());
+            drawItems(scene, items, x + ITEM_MARGIN, HEADER_HEIGHT, 800 / numberOfGroups - 2 * ITEM_MARGIN, 20);
         }
     }
 

@@ -56,10 +56,24 @@ public class ListSortingViewTest {
     public void withNoMoreItems() throws Exception {
         stub(model.getUpcomingItems()).toReturn(ImmutableList.<String>of());
         animals.addItem("Horse");
+        animals.addItem("Pony");
+        animals.addItem("Cow");
         animals.addItem("Pig");
         animals.addItem("Chicken");
+        animals.addItem("Porpoise");
         vehicles.addItem("Car");
         vehicles.addItem("Boat");
+        assertThat(subject, isApproved());
+    }
+
+    @Test
+    public void whileSorting_shouldShowFiveMostRecentItemsInEachGroup() throws Exception {
+        animals.addItem("NOT SEEN");
+        animals.addItem("Horse");
+        animals.addItem("Pony");
+        animals.addItem("Cow");
+        animals.addItem("Pig");
+        animals.addItem("Chicken");
         assertThat(subject, isApproved());
     }
 
