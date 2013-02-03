@@ -16,7 +16,7 @@ public class ListOrganizer {
 
     public static void main(String[] args) {
         ExternalStorage externalStorage = UILayer.getExternalStorage();
-        List<String> groups = ImmutableList.of("Animals", "Mineral", "Vegetable");
+        List<String> groups = ImmutableList.of("Project", "Excited", "Interest", "Meh");
 
         ListOrganizer main = new ListOrganizer(externalStorage);
         main.start(groups);

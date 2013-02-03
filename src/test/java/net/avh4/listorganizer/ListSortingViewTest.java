@@ -19,26 +19,30 @@ public class ListSortingViewTest {
     private ListSortingView.Model model;
     @Mock
     private ListSortingView.Actions actions;
-    @Mock
     private Group animals;
-    @Mock
     private Group vehicles;
-    @Mock
     private Group other;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new ListSortingView(model, actions);
-        stub(animals.getName()).toReturn("Animals");
-        stub(vehicles.getName()).toReturn("Vehicles");
-        stub(other.getName()).toReturn("Other");
+        animals = new Group("Animals");
+        vehicles = new Group("Vehicles");
+        other = new Group("Other");
         stub(model.getGroups()).toReturn(ImmutableList.of(animals, vehicles, other));
+        stub(model.getUpcomingItems()).toReturn(ImmutableList.of("Horse", "Car", "Boat", "Pig", "Chicken"));
     }
 
     @Test
     public void basicScenario() throws Exception {
-        stub(model.getUpcomingItems()).toReturn(ImmutableList.of("Horse", "Car", "Boat", "Pig", "Chicken"));
+        assertThat(subject, isApproved());
+    }
+
+    @Test
+    public void withFourGroups() throws Exception {
+        Group minerals = new Group("Minerals");
+        stub(model.getGroups()).toReturn(ImmutableList.of(animals, minerals, vehicles, other));
         assertThat(subject, isApproved());
     }
 
@@ -51,15 +55,16 @@ public class ListSortingViewTest {
     @Test
     public void withNoMoreItems() throws Exception {
         stub(model.getUpcomingItems()).toReturn(ImmutableList.<String>of());
-        stub(animals.getItems()).toReturn(ImmutableList.of("Horse", "Pig", "Chicken"));
-        stub(vehicles.getItems()).toReturn(ImmutableList.of("Car", "Boat"));
-        stub(other.getItems()).toReturn(ImmutableList.<String>of());
+        animals.addItem("Horse");
+        animals.addItem("Pig");
+        animals.addItem("Chicken");
+        vehicles.addItem("Car");
+        vehicles.addItem("Boat");
         assertThat(subject, isApproved());
     }
 
     @Test
     public void key_1_shouldSortTheCurrentItemToTheFirstGroup() {
-        stub(model.getUpcomingItems()).toReturn(ImmutableList.of("Horse", "Car", "Boat", "Pig", "Chicken"));
         subject.key(KeyEvent.VK_1);
         verify(actions).sort("Horse", animals);
     }
