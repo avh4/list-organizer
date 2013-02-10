@@ -5,10 +5,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import net.avh4.framework.data.test.ClasspathResourcesExternalStorage;
-import net.avh4.listorganizer.Group;
-import net.avh4.listorganizer.ListOrganizer;
-import net.avh4.listorganizer.ListSortingModel;
-import net.avh4.listorganizer.SortingFinishedListener;
+import net.avh4.listorganizer.*;
 
 import java.util.List;
 

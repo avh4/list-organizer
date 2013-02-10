@@ -1,4 +1,4 @@
-package net.avh4.listorganizer.features;
+package net.avh4.listorganizer;
 
 import au.com.bytecode.opencsv.CSVReader;
 import net.avh4.framework.data.ExternalStorage;

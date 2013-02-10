@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import net.avh4.framework.data.ExternalStorage;
 import net.avh4.framework.uilayer.UI;
 import net.avh4.framework.uilayer.UILayer;
-import net.avh4.listorganizer.features.CsvItemsLoader;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class ListOrganizer {
 
     public static void main(String[] args) {
         ExternalStorage externalStorage = UILayer.getExternalStorage();
-        List<String> groups = ImmutableList.of("Project", "Excited", "Interest", "Meh");
+        List<String> groups = ImmutableList.of("Project", "Excited", "Interest", "Meh", "Read");
 
         ListOrganizer main = new ListOrganizer(externalStorage);
         main.start(groups);
